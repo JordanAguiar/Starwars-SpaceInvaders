@@ -1,5 +1,7 @@
 import sys
 import pygame as pg
+import pygame.sprite
+
 from bullet import Bullet
 from tiefighter import Tiefighter
 
@@ -46,11 +48,21 @@ def check_keyup_events(event, ship):
         if event.key == pg.K_DOWN:
             ship.moving_down = False
 
-def update_bullets(bullets):
+def update_bullets(ai_settings, screen, ship, tiefighters, bullets):
     bullets.update()
     for bullet in bullets.copy():
         if bullet.rect.bottom <= 0:
             bullets.remove(bullet)
+    check_bullet_tiefighter_collisions(ai_settings,screen, ship, tiefighters, bullets)
+
+
+def check_bullet_tiefighter_collisions(ai_settings, screen, ship, tiefighters, bullets):
+    collisions = pygame.sprite.groupcollide(bullets, tiefighters, True,True)  # i will verify this code soon, because there is a bug when you shoot at the tie fighters
+    if len(tiefighters) == 0:
+        bullets.empty()
+        create_fleet(ai_settings, screen, ship, tiefighters)
+
+
 
 def get_number_tiefighters_x(ai_settings, tiefighter_width):
     available_space_x = ai_settings.screen_width - 2 * tiefighter_width
@@ -77,20 +89,28 @@ def get_number_rows(ai_settings, ship_height, tiefighter_height):
     available_space_y = (ai_settings.screen_height - (3* tiefighter_height))
     number_rows = int(available_space_y / (2* tiefighter_height))
     return number_rows
+
+
 def check_fleet_edges(ai_settings, tiefighters):
     for tiefighter in tiefighters.sprites():
         if tiefighter.check_edges():
             change_fleet_direction(ai_settings, tiefighters)
             break
 
+
+
 def change_fleet_direction(ai_settings, tiefighters):
     for tiefighter in tiefighters.sprites():
         tiefighter.rect.y += ai_settings.fleet_drop_speed
         ai_settings.fleet_direction *= -1
 
-def update_tiefighters(ai_settings, tiefighters):
+
+
+def update_tiefighters(ai_settings, ship, tiefighters):
     check_fleet_edges(ai_settings, tiefighters)
     tiefighters.update()
+    if pg.sprite.spritecollideany(ship, tiefighters):
+        print("Millennium Falcon hit!!!")
 
 
 
