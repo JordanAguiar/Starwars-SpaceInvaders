@@ -3,7 +3,9 @@ from pygame.sprite import Group
 from settings import Settings
 from ship import Ship
 import GameFunctions as gf
-from tiefighter import Tiefighter
+from game_stats import GameStats
+
+
 
 #Inicialização do game
 def run_game():
@@ -15,11 +17,12 @@ def run_game():
     gf.create_fleet(ai_settings, screen, ship, tiefighters)
     bullets = Group()
     pg.display.set_caption("Alien Invasion")
+    stats = GameStats(ai_settings)
     while True:
         gf.check_events(ai_settings, screen, ship, bullets)
         ship.update()
         gf.update_bullets(ai_settings, screen, ship, tiefighters, bullets)
-        gf.update_tiefighters(ai_settings, ship, tiefighters)
+        gf.update_tiefighters(ai_settings, stats, screen, ship, tiefighters, bullets)
         gf.update_screen(ai_settings, screen, ship, tiefighters, bullets)
 
 run_game()

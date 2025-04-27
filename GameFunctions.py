@@ -1,7 +1,7 @@
 import sys
 import pygame as pg
 import pygame.sprite
-
+from time import sleep
 from bullet import Bullet
 from tiefighter import Tiefighter
 
@@ -106,13 +106,20 @@ def change_fleet_direction(ai_settings, tiefighters):
 
 
 
-def update_tiefighters(ai_settings, ship, tiefighters):
+def update_tiefighters(ai_settings, stats, screen, ship, tiefighters, bullets):
     check_fleet_edges(ai_settings, tiefighters)
     tiefighters.update()
     if pg.sprite.spritecollideany(ship, tiefighters):
+        ship_hit(ai_settings, stats, screen, ship, tiefighters, bullets)
         print("Millennium Falcon hit!!!")
 
-
+def ship_hit(ai_settings, stats, screen, ship, tiefighters, bullets):
+    stats.ship_left -= 1
+    tiefighters.empty()
+    bullets.empty()
+    create_fleet(ai_settings, screen, ship, tiefighters)
+    ship.center_ship()
+    sleep(0.5)
 
 def update_screen(ai_settings, screen, ship, tiefighters, bullets):
     screen.fill(ai_settings.bg_color)
