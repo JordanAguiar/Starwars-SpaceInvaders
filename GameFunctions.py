@@ -111,15 +111,29 @@ def update_tiefighters(ai_settings, stats, screen, ship, tiefighters, bullets):
     tiefighters.update()
     if pg.sprite.spritecollideany(ship, tiefighters):
         ship_hit(ai_settings, stats, screen, ship, tiefighters, bullets)
-        print("Millennium Falcon hit!!!")
+
 
 def ship_hit(ai_settings, stats, screen, ship, tiefighters, bullets):
-    stats.ship_left -= 1
+    if stats.ship_left > 0:
+        stats.ship_left -= 1
+        sleep(0.5)
+
+    else:
+        stats.game_active = False
     tiefighters.empty()
     bullets.empty()
     create_fleet(ai_settings, screen, ship, tiefighters)
     ship.center_ship()
-    sleep(0.5)
+
+
+def check_aliens_bottom(ai_settings, stats, screen, ship, tiefighters, bullets):
+    screen_rect = screen.get_rect()
+    for tiefighter in tiefighters.sprites():
+        if tiefighter.rect.bottom >= screen_rect.bottom:
+            ship_hit(ai_settings, stats, screen, ship, tiefighters, bullets)
+            break
+
+
 
 def update_screen(ai_settings, screen, ship, tiefighters, bullets):
     screen.fill(ai_settings.bg_color)
