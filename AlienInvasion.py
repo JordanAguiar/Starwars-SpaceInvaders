@@ -16,7 +16,7 @@ def run_game():
     tiefighters = Group()
     gf.create_fleet(ai_settings, screen, ship, tiefighters)
     bullets = Group()
-    pg.display.set_caption("Alien Invasion")
+    pg.display.set_caption("Millennium x TieFighters")
     stats = GameStats(ai_settings)
     while True:
         gf.check_events(ai_settings, screen, ship, bullets)
